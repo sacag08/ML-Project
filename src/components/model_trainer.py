@@ -34,14 +34,25 @@ class ModelTrainer:
             )
             models = {'RandomForest':RandomForestRegressor(),
                       'Decision Tree': DecisionTreeRegressor(),
-                      'Gradient Boostomg':GradientBoostingRegressor(),
+                      'Gradient Boosting':GradientBoostingRegressor(),
                       'Linear Regression': LinearRegression(),
                       'K-Neighbor Regressor' : KNeighborsRegressor(),
                       'XGBoost' : XGBRegressor(),
                       'CatBoostRegressor': CatBoostRegressor(),
-                      'AdaBosst Regressor' : AdaBoostRegressor()
+                      'AdaBoost Regressor' : AdaBoostRegressor()
                       }
-            model_report : dict= evaluate_model(xtrain=xtrain,ytrain=ytrain,xtest=xtest,ytest=ytest,models = models)
+            params = {
+                'RandomForest' : {'max_depth' : [3,4,5,6],'min_samples_split' : [3,5,7],'n_estimators' : [8,16,32,64,128]},
+                'Decision Tree' : {'max_depth' : [3,4,5,6],'min_samples_split' : [3,5,7]},
+                'Gradient Boosting' : {'n_estimators' : [8,16,32,64,128],'max_depth'  : [3,5,7]},
+                'Linear Regression' : {},
+                'K-Neighbor Regressor' : {'weights' : ['uniform','distance'], 'n_neighbors' : [3,4,5] },
+                'XGBoost' : {'eta' : [0.001,0.005,0.01,0.05,0.1],'n_estimators' : [8,16,32,64,128]},
+                'CatBoostRegressor' : {'depth' : [6,8,10], 'learning_rate' : [.1,.05,.001]},
+                'AdaBoost Regressor' : {'learning_rate' : [.1,.05,.01,.05,.001],'n_estimators': [8,16,32,64,128]}
+
+            }
+            model_report : dict= evaluate_model(xtrain=xtrain,ytrain=ytrain,xtest=xtest,ytest=ytest,models = models,params = params)
 
             best_model_score = max(sorted(model_report.values()))
             best_model_name = list(model_report.keys())[
